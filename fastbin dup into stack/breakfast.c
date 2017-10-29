@@ -10,7 +10,7 @@
 // gcc breakfast.c -o breakfast -fno-stack-protector -Wl,-z,relro,-z,now
 
 struct H {
-	void* m[MAX];
+	char* m[MAX];
 	unsigned size[MAX];
 };
 
@@ -39,7 +39,7 @@ void crea() {
 	if (pos < MAX) {
 		puts("Enter the size in kcal.");
 		while ((scanf("%u%c", &ptr.size[pos], &c) != 2 || c != '\n') && clear_stdin());
-		if (ptr.size[pos] >= 0 && ptr.size[pos] <= 80) {
+		if (ptr.size[pos] >= 0 && ptr.size[pos] <= 0x70) {
 			ptr.m[pos] = malloc(ptr.size[pos]);
 		} else {
 			puts("Bad size.");
@@ -68,7 +68,7 @@ void ver() {
 	puts("Enter the breakfast to see");
 	while ((scanf("%u%c", &i, &c) != 2 || c != '\n') && clear_stdin());
 	if (i < MAX) {
-		write(1, *((void **) ptr.m[i]), ptr.size[i]);
+		write(1, *((char **) ptr.m[i]), ptr.size[i]);
 	} else {
 		puts("Bad position");
 	}	
